@@ -5,21 +5,18 @@ import com.example.servingwebcontent.repos.UserRepo;
 //import com.example.servingwebcontent.service.UserService;
 import com.example.servingwebcontent.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
 
 
 @Controller
 public class GreetingController {
 
-
-//    @Autowired
-//    private UserRepo userRepo;
 
     @Autowired
     private UserServiceImpl userService;
@@ -27,14 +24,23 @@ public class GreetingController {
 
     @GetMapping("/")
     public String greeting() {
-        return "redirect:/users";
+        return "redirect:/login";
     }
 
-    @GetMapping(value = "/users")
+    @GetMapping(value = "/admin")
     public String showUsers(ModelMap model) {
         Iterable<User> allUsers = userService.allUsers();
         model.addAttribute("allUsers", allUsers);
         return "user";
+    }
+
+    @GetMapping("/user")
+    public ModelAndView showUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("currUser");
+        modelAndView.addObject("user", user);
+        return modelAndView;
     }
 
     @GetMapping(value = "/edit/{id}")
@@ -49,7 +55,7 @@ public class GreetingController {
     @PostMapping(value = "/edit")
     public String create(@ModelAttribute("user") User user) {
         userService.add(user);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 
     @GetMapping(value = "/new")
@@ -61,7 +67,7 @@ public class GreetingController {
     @PostMapping(value = "/add")
     public String add(@ModelAttribute("user") User user) {
         userService.add(user);
-        return "redirect:/users";
+        return "redirect:/admin";
 
     }
 
@@ -69,7 +75,7 @@ public class GreetingController {
     public String remove(@PathVariable("id") int id) throws Exception {
         User user = userService.getById(id);
         userService.delete(user);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 
 
