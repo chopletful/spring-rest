@@ -1,13 +1,10 @@
 package com.example.servingwebcontent.controllers;
 
 import com.example.servingwebcontent.model.User;
-import com.example.servingwebcontent.repos.UserRepo;
-//import com.example.servingwebcontent.service.UserService;
 import com.example.servingwebcontent.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
