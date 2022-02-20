@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -37,9 +39,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void add(User user) {
-        user.setRoles(Collections.singleton(new Role(2, "ROLE_USER")));
         userRepo.save(user);
 
+    }
+
+    public Set<Role> getSetOfRoles(List<String> rolesId){
+        Set<Role> roleSet = new HashSet<>();
+        for (String id: rolesId) {
+            roleSet.add(roleRepository.getRoleById(Integer.parseInt(id)));
+        }
+        return roleSet;
     }
 
     @Transactional

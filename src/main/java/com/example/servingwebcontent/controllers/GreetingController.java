@@ -1,6 +1,8 @@
 package com.example.servingwebcontent.controllers;
 
+import com.example.servingwebcontent.model.Role;
 import com.example.servingwebcontent.model.User;
+import com.example.servingwebcontent.repos.RoleRepo;
 import com.example.servingwebcontent.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +11,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+import java.util.Set;
 
 
 @Controller
@@ -17,6 +21,9 @@ public class GreetingController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    RoleRepo roleRepository;
 
 
     @GetMapping("/")
@@ -27,15 +34,18 @@ public class GreetingController {
     @GetMapping(value = "/admin")
     public String showUsers(ModelMap model) {
         Iterable<User> allUsers = userService.allUsers();
+        List<Role> roles = (List<Role>) roleRepository.findAll();
         model.addAttribute("allUsers", allUsers);
-        return "user";
+        model.addAttribute("allRoles", roles);
+        model.addAttribute("newUser", new User());
+        return "adminPage";
     }
 
     @GetMapping("/user")
     public ModelAndView showUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("currUser");
+        modelAndView.setViewName("userPage");
         modelAndView.addObject("user", user);
         return modelAndView;
     }
@@ -49,26 +59,29 @@ public class GreetingController {
         return modelAndView;
     }
 
-    @PostMapping(value = "/edit")
+    @PostMapping(value = "admin/edit")
     public String create(@ModelAttribute("user") User user) {
         userService.add(user);
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/new")
+    @GetMapping(value = "admin/new")
     public String newUser(ModelMap model){
-        model.addAttribute("user", new User());
+        model.addAttribute("newUser", new User());
         return "editPage";
     }
 
-    @PostMapping(value = "/add")
-    public String add(@ModelAttribute("user") User user) {
+    @PostMapping(value = "admin/add")
+    public String add(@ModelAttribute("user") User user,
+                        @RequestParam("authorities") List<String> values ) {
+        Set<Role> roleSet = userService.getSetOfRoles(values);
+        user.setRoles(roleSet);
         userService.add(user);
         return "redirect:/admin";
 
     }
 
-    @GetMapping(value = "/delete/{id}")
+    @GetMapping(value = "admin/delete/{id}")
     public String remove(@PathVariable("id") int id) throws Exception {
         User user = userService.getById(id);
         userService.delete(user);
