@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
@@ -37,11 +38,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/user*").access("hasAnyRole('ROLE_USER')")
-                .antMatchers("/admin*").access("hasAnyRole('ROLE_ADMIN')")
+                .antMatchers("/user*").access("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+                .antMatchers("/admin**").access("hasAnyRole('ROLE_ADMIN')")
+                .antMatchers("/test**").access("hasAnyRole('ROLE_ADMIN')")
                 .and().formLogin()  // Spring сам подставит свою логин форму
                 .successHandler(successUserHandler); // подключаем наш SuccessHandler для перенеправления по ролям
     }
+
+
 
     @Bean
     public SpringTemplateEngine templateEngine() {

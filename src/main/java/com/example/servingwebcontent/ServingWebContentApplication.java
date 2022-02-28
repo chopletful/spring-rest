@@ -33,19 +33,19 @@ public class ServingWebContentApplication implements CommandLineRunner {
 
 
 
-		roles.save(new Role(1,"ROLE_ADMIN"));
-		roles.save(new Role(2,"ROLE_USER"));
-
-		Set<Role> roleSet = users.getSetOfRoles(Collections.singletonList("1"));
-		Set<Role> roleSet1 = users.getSetOfRoles(Collections.singletonList("2"));
-
-		User admin = new User("27","Ivan","Fedotov","admin","admin");
-		User user = new User("17","Fedot","Ivanov","user","user");
-
-		admin.setRoles(roleSet);
-		user.setRoles(roleSet1);
-		users.add(admin);
-		users.add(user);
+//		roles.save(new Role(1,"ROLE_ADMIN"));
+//		roles.save(new Role(2,"ROLE_USER"));
+//
+//		Set<Role> roleSet = users.getSetOfRoles(Collections.singletonList("1"));
+//		Set<Role> roleSet1 = users.getSetOfRoles(Collections.singletonList("2"));
+//
+//		User admin = new User("27","Ivan","Fedotov","admin","admin");
+//		User user = new User("17","Fedot","Ivanov","user","user");
+//
+//		admin.setRoles(roleSet);
+//		user.setRoles(roleSet1);
+//		users.add(admin);
+//		users.add(user);
 
 	}
 }

@@ -49,45 +49,5 @@ public class GreetingController {
         modelAndView.addObject("user", user);
         return modelAndView;
     }
-
-    @GetMapping(value = "/edit/{id}")
-    public ModelAndView editPage(@PathVariable("id") int id) throws Exception {
-        User user = userService.getById(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("editPage");
-        modelAndView.addObject(user);
-        return modelAndView;
-    }
-
-    @PostMapping(value = "admin/edit")
-    public String create(@ModelAttribute("user") User user) {
-        userService.add(user);
-        return "redirect:/admin";
-    }
-
-    @GetMapping(value = "admin/new")
-    public String newUser(ModelMap model){
-        model.addAttribute("newUser", new User());
-        return "editPage";
-    }
-
-    @PostMapping(value = "admin/add")
-    public String add(@ModelAttribute("user") User user,
-                        @RequestParam("authorities") List<String> values ) {
-        Set<Role> roleSet = userService.getSetOfRoles(values);
-        user.setRoles(roleSet);
-        userService.add(user);
-        return "redirect:/admin";
-
-    }
-
-    @GetMapping(value = "admin/delete/{id}")
-    public String remove(@PathVariable("id") int id) throws Exception {
-        User user = userService.getById(id);
-        userService.delete(user);
-        return "redirect:/admin";
-    }
-
-
 }
 
